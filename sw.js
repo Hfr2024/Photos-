@@ -1,4 +1,4 @@
-const CACHE = 'style-studio-v1';
+const CACHE = 'style-studio-v2';
 const SHELL = ['./', './index.html', './manifest.json', './icon.svg'];
 
 self.addEventListener('install', e => {

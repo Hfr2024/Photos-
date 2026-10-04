@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ستايل ستوديو</title>
+<meta name="theme-color" content="#1C2536">
+<meta name="description" content="غيّر الملابس والخلفية وأضف العناصر وحسّن صورك بالذكاء الصناعي، مجاناً.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1C2536; --ink-2:#2B3855; --ink-edge:#0A101B;
+  --paper:#E6EBF3; --paper-2:#D3DBE8;
+  --tape:#F4C430; --tape-2:#FFDB62; --tape-edge:#C2950A;
+  --chalk:#3B5BDB; --muted:#667085; --line:#DCE3EC; --danger:#B42318;
+  --raise:
+    0 1px 0 rgba(255,255,255,.95) inset,
+    0 -1px 0 rgba(28,37,54,.05) inset,
+    0 1px 2px rgba(28,37,54,.10),
+    0 8px 16px -6px rgba(28,37,54,.18),
+    0 22px 36px -16px rgba(28,37,54,.30);
+  --raise-sm:
+    0 1px 0 rgba(255,255,255,.95) inset,
+    0 1px 2px rgba(28,37,54,.12),
+    0 5px 10px -3px rgba(28,37,54,.20);
+  --sink:inset 0 2px 5px rgba(28,37,54,.16),inset 0 -1px 0 rgba(255,255,255,.95);
+  --stage-h:44dvh;
+  --pb:34px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0}
+body{
+  font-family:"IBM Plex Sans Arabic",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
+  background:linear-gradient(180deg,var(--paper) 0%,var(--paper-2) 100%) fixed;
+  color:var(--ink);font-size:15px;line-height:1.6;
+  display:flex;flex-direction:column;overflow:hidden;
+}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--chalk);outline-offset:2px}
+.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.mirror{transform:scaleX(-1)}
+
+/* ---------- header ---------- */
+header{
+  position:relative;z-index:3;display:flex;align-items:center;gap:8px;
+  padding:10px 12px;padding-top:max(10px,env(safe-area-inset-top));
+  background:linear-gradient(180deg,#2A3652 0%,var(--ink) 100%);color:#fff;
+  box-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 8px 18px -8px rgba(0,0,0,.55);
+}
+.logo{
+  width:38px;height:38px;border-radius:12px;display:grid;place-items:center;color:var(--ink);
+  background:linear-gradient(180deg,var(--tape-2),var(--tape));
+  box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 3px 0 var(--tape-edge),0 8px 12px -4px rgba(0,0,0,.5);
+}
+header h1{margin:0;font-size:18px;font-weight:700;flex:1;white-space:nowrap}
+.ibtn,.hbtn{
+  border:1px solid rgba(255,255,255,.10);color:#fff;border-radius:12px;
+  background:linear-gradient(180deg,#3A4863,#26324B);
+  box-shadow:0 1px 0 rgba(255,255,255,.2) inset,0 3px 0 var(--ink-edge),0 8px 12px -4px rgba(0,0,0,.5);
+  transition:transform .08s,box-shadow .08s;
+}
+.ibtn{width:40px;height:40px;display:grid;place-items:center;padding:0}
+.hbtn{min-height:40px;padding:0 16px;font-weight:700;font-size:14px}
+.hbtn.solid{
+  color:var(--ink);border-color:transparent;
+  background:linear-gradient(180deg,var(--tape-2),var(--tape));
+  box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 3px 0 var(--tape-edge),0 8px 12px -4px rgba(0,0,0,.5);
+}
+.ibtn:active,.hbtn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(255,255,255,.2) inset,0 1px 0 var(--ink-edge)}
+.hbtn.solid:active{box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 1px 0 var(--tape-edge)}
+.ibtn:disabled,.hbtn:disabled{opacity:.38;cursor:default;transform:none}
+
+/* ---------- tape measure (status + progress) ---------- */
+.tape{
+  position:relative;z-index:2;height:32px;overflow:hidden;background-color:var(--tape);color:var(--ink);
+  background-image:
+    linear-gradient(90deg,rgba(28,37,54,.5) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(28,37,54,.9) 1px,transparent 1px);
+  background-size:8px 6px,40px 12px;background-repeat:repeat-x;background-position:0 100%,0 100%;
+  display:flex;align-items:flex-start;padding:3px 14px 0;font-size:13px;font-weight:600;
+  box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 6px 12px -6px rgba(28,37,54,.45);
+}
+.tape i{position:absolute;inset-block:0;inset-inline-start:0;width:var(--p,0%);background:rgba(28,37,54,.18);transition:width .3s}
+.tape span{position:relative;z-index:1}
+.tape.busy.ind i{width:30%;animation:sweep 1.1s ease-in-out infinite alternate}
+@keyframes sweep{from{inset-inline-start:0}to{inset-inline-start:70%}}
+@media (prefers-reduced-motion:reduce){
+  .tape.busy.ind i{animation:none;width:100%;opacity:.5}
+  *{transition:none!important}
+}
+
+/* ---------- stage: photo mounted like a raised print ---------- */
+.stage{height:var(--stage-h);flex:none;padding:14px 14px var(--pb)}
+.frame{
+  height:100%;display:grid;place-items:center;padding:8px;overflow:hidden;
+  border:6px solid #fff;border-radius:24px;
+  background:
+    linear-gradient(45deg,#dde3ec 25%,transparent 25%,transparent 75%,#dde3ec 75%),
+    linear-gradient(45deg,#dde3ec 25%,transparent 25%,transparent 75%,#dde3ec 75%),
+    #eef1f6;
+  background-size:18px 18px;background-position:0 0,9px 9px,0 0;
+  box-shadow:var(--raise),inset 0 2px 8px rgba(28,37,54,.12);
+}
+#cv{
+  display:none;max-width:100%;max-height:calc(var(--stage-h) - 14px - var(--pb) - 28px);width:auto;height:auto;
+  touch-action:none;border-radius:12px;background:#fff;
+  box-shadow:0 2px 4px rgba(28,37,54,.18),0 14px 28px -10px rgba(28,37,54,.5);
+}
+.empty{
+  width:100%;height:100%;display:grid;align-content:center;justify-items:center;gap:10px;text-align:center;padding:16px;
+  border:2px dashed rgba(28,37,54,.32);border-radius:16px;background:rgba(255,255,255,.72);cursor:pointer;
+}
+.empty .big{
+  width:76px;height:76px;border-radius:24px;display:grid;place-items:center;color:var(--ink);
+  background:linear-gradient(180deg,var(--tape-2),var(--tape));
+  box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 5px 0 var(--tape-edge),0 14px 22px -8px rgba(194,149,10,.7);
+}
+.empty .big .i{width:40px;height:40px;stroke-width:1.7}
+.empty b{font-size:17px}
+.empty small{color:var(--muted)}
+
+/* ---------- tabs: floating raised bar ---------- */
+.panel-wrap{flex:1;min-height:0;display:flex;flex-direction:column}
+.tabs{
+  position:relative;z-index:4;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;
+  margin:calc(-1 * var(--pb) + 2px) 14px 12px;padding:6px;border-radius:22px;
+  background:linear-gradient(180deg,#fff,#F1F4F9);border:1px solid rgba(255,255,255,.9);
+  box-shadow:var(--raise);
+}
+.tabs button{
+  display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 2px 7px;border:0;border-radius:16px;
+  background:none;color:var(--muted);font-size:12.5px;font-weight:600;
+  transition:transform .1s,box-shadow .1s;
+}
+.tabs button[aria-selected=true]{
+  color:var(--ink);transform:translateY(-1px);
+  background:linear-gradient(180deg,var(--tape-2),var(--tape));
+  box-shadow:0 1px 0 rgba(255,255,255,.75) inset,0 3px 0 var(--tape-edge),0 8px 12px -4px rgba(194,149,10,.6);
+}
+body.busy .panel,body.busy header,body.busy .tabs{pointer-events:none;opacity:.55}
+
+/* ---------- cards ---------- */
+.panel{flex:1;overflow:auto;padding:6px 14px calc(26px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:16px;-webkit-overflow-scrolling:touch}
+.panel[hidden]{display:none}
+.card{
+  flex:none;padding:16px;border-radius:22px;border:1px solid rgba(255,255,255,.95);
+  background:linear-gradient(180deg,#FFFFFF 0%,#F4F6FB 100%);
+  box-shadow:var(--raise);
+}
+.card h2{display:flex;align-items:center;gap:10px;margin:0 0 6px;font-size:16px;font-weight:700}
+.ico{
+  width:36px;height:36px;border-radius:12px;display:grid;place-items:center;flex:none;color:var(--ink);
+  background:linear-gradient(180deg,var(--tape-2),var(--tape));
+  box-shadow:0 1px 0 rgba(255,255,255,.75) inset,0 3px 0 var(--tape-edge),0 8px 12px -5px rgba(194,149,10,.6);
+}
+.ico .i{width:19px;height:19px}
+.ico.dark{
+  color:var(--tape);
+  background:linear-gradient(180deg,#3A4863,var(--ink));
+  box-shadow:0 1px 0 rgba(255,255,255,.2) inset,0 3px 0 var(--ink-edge),0 8px 12px -5px rgba(28,37,54,.6);
+}
+.hint{margin:0 0 12px;color:var(--muted);font-size:13px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+/* buttons */
+.btn{
+  min-height:48px;padding:0 18px;border:0;border-radius:15px;font-weight:700;color:var(--ink);
+  background:linear-gradient(180deg,#FFFFFF,#ECF0F6);
+  box-shadow:0 1px 0 #fff inset,0 0 0 1px var(--line),0 4px 0 #C5CEDC,0 10px 14px -6px rgba(28,37,54,.28);
+  transition:transform .08s,box-shadow .08s;
+}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #fff inset,0 0 0 1px var(--line),0 1px 0 #C5CEDC}
+.btn.primary{
+  color:#fff;background:linear-gradient(180deg,#38466A,var(--ink));
+  box-shadow:0 1px 0 rgba(255,255,255,.22) inset,0 4px 0 var(--ink-edge),0 12px 16px -6px rgba(28,37,54,.55);
+}
+.btn.primary:active{box-shadow:0 1px 0 rgba(255,255,255,.22) inset,0 1px 0 var(--ink-edge)}
+.btn.danger{color:var(--danger);box-shadow:0 1px 0 #fff inset,0 0 0 1px #F0CFCB,0 4px 0 #E7B9B3,0 10px 14px -6px rgba(180,35,24,.3)}
+.btn.block{width:100%}
+.chip{
+  min-height:40px;padding:0 15px;border:0;border-radius:999px;font-size:14px;font-weight:600;
+  background:linear-gradient(180deg,#fff,#EEF2F7);box-shadow:var(--raise-sm),0 0 0 1px var(--line);
+  transition:transform .08s,box-shadow .08s;
+}
+.chip:active{transform:translateY(2px);background:var(--tape);box-shadow:0 0 0 1px var(--tape-edge)}
+
+/* inputs: recessed */
+input[type=text],input[type=url],input[type=password]{
+  width:100%;min-height:48px;border:0;border-radius:14px;padding:0 14px;background:#EDF1F7;box-shadow:var(--sink);
+}
+input[type=text]:focus,input[type=url]:focus,input[type=password]:focus{outline:0;box-shadow:var(--sink),0 0 0 3px rgba(59,91,219,.4)}
+input::placeholder{color:#9AA3B5}
+.field{display:grid;gap:7px;margin-bottom:12px}
+.field label{font-size:13px;font-weight:600}
+
+/* sliders: recessed track, raised knob */
+.slider{display:grid;grid-template-columns:64px 1fr 34px;gap:10px;align-items:center;margin-bottom:8px;font-size:14px;font-weight:600}
+.slider output{text-align:end;font-variant-numeric:tabular-nums;color:var(--muted);font-size:13px;font-weight:500}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:30px;background:transparent;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:9px;border-radius:99px;background:#E0E6EF;box-shadow:var(--sink)}
+input[type=range]::-moz-range-track{height:9px;border-radius:99px;background:#E0E6EF;box-shadow:var(--sink)}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:26px;height:26px;margin-top:-8.5px;border-radius:50%;border:0;
+  background:radial-gradient(circle at 35% 30%,#fff,#D9E0EC);box-shadow:0 0 0 2.5px var(--ink),0 4px 8px rgba(28,37,54,.4);
+}
+input[type=range]::-moz-range-thumb{
+  width:24px;height:24px;border-radius:50%;border:0;
+  background:radial-gradient(circle at 35% 30%,#fff,#D9E0EC);box-shadow:0 0 0 2.5px var(--ink),0 4px 8px rgba(28,37,54,.4);
+}
+.check{display:flex;gap:10px;align-items:center;min-height:40px;font-weight:500}
+.check input{width:22px;height:22px;accent-color:var(--ink)}
+
+/* swatches: glossy tiles */
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:12px}
+.sw{
+  height:58px;border:0;border-radius:16px;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.5),inset 0 -4px 8px rgba(0,0,0,.16),0 0 0 3px #fff,0 6px 10px -2px rgba(28,37,54,.4);
+  transition:transform .1s,box-shadow .1s;
+}
+.sw:active{transform:translateY(2px)}
+.sw[aria-pressed=true]{
+  transform:translateY(-2px);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.5),inset 0 -4px 8px rgba(0,0,0,.16),0 0 0 3px #fff,0 0 0 6px var(--ink),0 12px 16px -4px rgba(28,37,54,.5);
+}
+.sw.none{background:repeating-linear-gradient(45deg,#fff,#fff 6px,#E6EAF1 6px,#E6EAF1 12px);font-size:12px;font-weight:700;color:var(--ink)}
+
+/* segmented */
+.seg{display:inline-grid;grid-auto-flow:column;gap:4px;padding:4px;border-radius:16px;background:#E4E9F1;box-shadow:var(--sink)}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{padding:10px 22px;border-radius:12px;font-weight:700;cursor:pointer;min-width:72px;text-align:center;color:var(--muted)}
+.seg input:checked+label{
+  color:#fff;background:linear-gradient(180deg,#38466A,var(--ink));
+  box-shadow:0 1px 0 rgba(255,255,255,.22) inset,0 3px 0 var(--ink-edge),0 6px 10px -3px rgba(28,37,54,.5);
+}
+.seg input:focus-visible+label{outline:3px solid var(--chalk);outline-offset:2px}
+
+.garment{display:flex;gap:14px;align-items:center}
+.garment img{
+  width:80px;height:80px;object-fit:cover;border-radius:16px;border:4px solid #fff;background:#F1F4F9;display:none;
+  box-shadow:var(--raise-sm);
+}
+
+/* ---------- settings dialog ---------- */
+dialog{border:0;padding:0;background:transparent;width:min(92vw,440px);max-height:90dvh;color:inherit;overflow:visible}
+dialog::backdrop{background:rgba(16,24,40,.55);backdrop-filter:blur(5px)}
+dialog .card{max-height:88dvh;overflow:auto}
+
+#toast{
+  position:fixed;inset-inline:14px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:99;
+  padding:14px 16px;border-radius:16px;font-size:14px;font-weight:500;color:#fff;
+  background:linear-gradient(180deg,#38466A,var(--ink));
+  box-shadow:0 1px 0 rgba(255,255,255,.2) inset,0 4px 0 var(--ink-edge),0 18px 30px -8px rgba(0,0,0,.6);
+  transform:translateY(160%);transition:transform .25s;pointer-events:none;
+}
+#toast.show{transform:none}
+
+/* ---------- large screens ---------- */
+@media (min-width:860px){
+  body{flex-direction:row;flex-wrap:wrap}
+  :root{--stage-h:calc(100dvh - 90px);--pb:14px}
+  header,.tape{width:100%}
+  .stage{width:60%}
+  .panel-wrap{width:40%}
+  .tabs{margin-top:14px}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-hanger" viewBox="0 0 24 24"><path d="M12 5.500a2.500 2.500 0 1 1 2.500 2.500C13 8.700 12 9.500 12 11.500V13"/><path d="M12 13 3 19.200c-1.200.9-.6 2.800 1 2.800h16c1.600 0 2.200-1.900 1-2.800z"/></symbol>
+    <symbol id="i-shirt" viewBox="0 0 24 24"><path d="M8 3 3 6l2 4 3-1v12h8V9l3 1 2-4-5-3a4 4 0 0 1-8 0z"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-8 9"/></symbol>
+    <symbol id="i-car" viewBox="0 0 24 24"><path d="M4 15v-3l2-5h12l2 5v3"/><rect x="3" y="15" width="18" height="4" rx="1.500"/><circle cx="7.500" cy="17" r=".6"/><circle cx="16.500" cy="17" r=".6"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.800 5.200L19 10l-5.200 1.800L12 17l-1.800-5.200L5 10l5.200-1.800z"/><path d="M19 16l.8 2.200L22 19l-2.200.8L19 22l-.8-2.200L16 19l2.200-.8z"/></symbol>
+    <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.500a5.500 5.500 0 0 1 0 11H11"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></symbol>
+    <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.500 0 2-1 1.500-2-.5-1.200.2-2.500 1.700-2.500H17a4 4 0 0 0 4-4c0-5-4-9.500-9-9.500z"/><circle cx="7.500" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7" r="1"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+    <symbol id="i-cursor" viewBox="0 0 24 24"><path d="m5 3 14 7-6 2-2 6z"/></symbol>
+  </defs>
+</svg>
+
+<header>
+  <span class="logo"><svg class="i"><use href="#i-hanger"/></svg></span>
+  <h1>ستايل ستوديو</h1>
+  <button class="ibtn" id="btnUndo" aria-label="تراجع" disabled><svg class="i mirror"><use href="#i-undo"/></svg></button>
+  <button class="ibtn" id="btnNew" aria-label="صورة جديدة"><svg class="i"><use href="#i-plus"/></svg></button>
+  <button class="ibtn" id="btnSettings" aria-label="الإعدادات"><svg class="i"><use href="#i-sliders"/></svg></button>
+  <button class="hbtn solid" id="btnSave" disabled>حفظ</button>
+</header>
+<div class="tape" id="tape" role="status" aria-live="polite"><i></i><span id="statusText">اختر صورة لتبدأ</span></div>
+
+<main class="stage" id="stage">
+  <div class="frame">
+    <canvas id="cv" aria-label="معاينة الصورة"></canvas>
+    <label class="empty" id="empty" for="file" tabindex="0">
+      <span class="big"><svg class="i"><use href="#i-hanger"/></svg></span>
+      <b>اختر صورة شخص</b>
+      <small>الأفضل صورة بوضع الوقوف ومواجهة الكاميرا</small>
+    </label>
+  </div>
+</main>
+<input type="file" id="file" accept="image/*" hidden>
+
+<div class="panel-wrap">
+  <nav class="tabs" role="tablist" aria-label="الأدوات">
+    <button role="tab" aria-selected="true" aria-controls="p-clothes" data-tab="clothes"><svg class="i"><use href="#i-shirt"/></svg>الملابس</button>
+    <button role="tab" aria-selected="false" aria-controls="p-bg" data-tab="bg"><svg class="i"><use href="#i-image"/></svg>الخلفية</button>
+    <button role="tab" aria-selected="false" aria-controls="p-obj" data-tab="obj"><svg class="i"><use href="#i-car"/></svg>العناصر</button>
+    <button role="tab" aria-selected="false" aria-controls="p-enh" data-tab="enh"><svg class="i"><use href="#i-spark"/></svg>التحسين</button>
+  </nav>
+
+  <!-- clothes -->
+  <section class="panel" id="p-clothes" role="tabpanel">
+    <div class="card">
+      <h2><span class="ico"><svg class="i"><use href="#i-shirt"/></svg></span>القطعة الجديدة</h2>
+      <p class="hint">ارفع صورة واضحة للقطعة وحدها. الوجه والجسم والوضعية تبقى كما هي.</p>
+      <div class="garment">
+        <button class="btn" id="btnGarment">اختر صورة القطعة</button>
+        <img id="garmPrev" alt="القطعة المختارة">
+      </div>
+      <input type="file" id="garmFile" accept="image/*" hidden>
+    </div>
+    <div class="card">
+      <h2><span class="ico dark"><svg class="i"><use href="#i-spark"/></svg></span>ركّب على الصورة</h2>
+      <div class="field">
+        <label for="garmDesc">وصف القطعة</label>
+        <input type="text" id="garmDesc" placeholder="black short sleeve t-shirt" dir="ltr">
+        <p class="hint" style="margin:0">الوصف بالإنجليزية يعطي نتيجة أدق.</p>
+      </div>
+      <button class="btn primary block" id="btnTryOn">جرّب القطعة</button>
+      <p class="hint" style="margin:10px 0 0">قد يستغرق التركيب دقيقة أو أكثر لأن الخدمة مجانية ومشتركة.</p>
+    </div>
+  </section>
+
+  <!-- background -->
+  <section class="panel" id="p-bg" role="tabpanel" hidden>
+    <div class="card">
+      <h2><span class="ico"><svg class="i"><use href="#i-palette"/></svg></span>ألوان جاهزة</h2>
+      <div class="swatches" id="swatches" style="margin-top:12px"></div>
+    </div>
+    <div class="card">
+      <h2><span class="ico dark"><svg class="i"><use href="#i-spark"/></svg></span>خلفية من الذكاء الصناعي</h2>
+      <div class="row" id="bgChips" style="margin:10px 0 14px"></div>
+      <div class="field">
+        <input type="text" id="bgPrompt" placeholder="beach at sunset" dir="ltr" aria-label="وصف الخلفية">
+      </div>
+      <button class="btn primary block" id="btnGenBg">ولّد الخلفية</button>
+    </div>
+    <div class="card">
+      <h2><span class="ico"><svg class="i"><use href="#i-upload"/></svg></span>خلفية من صورتك</h2>
+      <button class="btn block" id="btnBgFile" style="margin-top:8px">ارفع صورة</button>
+      <input type="file" id="bgFile" accept="image/*" hidden>
+    </div>
+  </section>
+
+  <!-- objects -->
+  <section class="panel" id="p-obj" role="tabpanel" hidden>
+    <div class="card">
+      <h2><span class="ico"><svg class="i"><use href="#i-car"/></svg></span>أضف عنصراً</h2>
+      <div class="row" id="objChips" style="margin:10px 0 14px"></div>
+      <div class="field">
+        <input type="text" id="objPrompt" placeholder="vintage red car" dir="ltr" aria-label="وصف العنصر">
+      </div>
+      <div class="row">
+        <button class="btn primary" id="btnGenObj" style="flex:1">ولّد العنصر</button>
+        <button class="btn" id="btnObjFile" style="flex:1">ارفع صورة</button>
+      </div>
+      <input type="file" id="objFile" accept="image/*" hidden>
+      <label class="check" style="margin-top:10px"><input type="checkbox" id="objCut" checked> إزالة خلفية العنصر</label>
+    </div>
+    <div class="card" id="selGroup" hidden>
+      <h2><span class="ico dark"><svg class="i"><use href="#i-cursor"/></svg></span>العنصر المحدد</h2>
+      <p class="hint">اسحب العنصر على الصورة لتحريكه.</p>
+      <div class="slider"><label for="objSize">الحجم</label><input type="range" id="objSize" min="8" max="120" value="45"><output id="objSizeV">45</output></div>
+      <label class="check"><input type="checkbox" id="objBehind"> خلف الشخص</label>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="btnFlip" style="flex:1">اعكس</button>
+        <button class="btn danger" id="btnDel" style="flex:1">احذف</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- enhance -->
+  <section class="panel" id="p-enh" role="tabpanel" hidden>
+    <div class="card">
+      <h2><span class="ico"><svg class="i"><use href="#i-expand"/></svg></span>تكبير الدقة</h2>
+      <div class="seg" role="radiogroup" aria-label="التكبير" style="margin-top:10px">
+        <input type="radio" name="scale" id="s1" value="1"><label for="s1">×1</label>
+        <input type="radio" name="scale" id="s2" value="2" checked><label for="s2">×2</label>
+      </div>
+    </div>
+    <div class="card">
+      <h2><span class="ico dark"><svg class="i"><use href="#i-sliders"/></svg></span>ضبط الصورة</h2>
+      <div style="margin-top:12px">
+        <div class="slider"><label for="enSharp">الحدّة</label><input type="range" id="enSharp" min="0" max="20" value="8"><output id="enSharpV">8</output></div>
+        <div class="slider"><label for="enSat">الألوان</label><input type="range" id="enSat" min="0" max="40" value="10"><output id="enSatV">10</output></div>
+        <label class="check"><input type="checkbox" id="enAuto" checked> ضبط الإضاءة والتباين تلقائياً</label>
+      </div>
+      <button class="btn primary block" id="btnEnhance" style="margin-top:14px">حسّن الصورة</button>
+      <p class="hint" style="margin:10px 0 0">التحسين يدمج الخلفية والعناصر في صورة واحدة، فاستخدمه في الآخر.</p>
+    </div>
+  </section>
+</div>
+
+<dialog id="settings">
+  <div class="card">
+    <h2><span class="ico dark"><svg class="i"><use href="#i-sliders"/></svg></span>إعدادات الخدمات</h2>
+    <div class="field" style="margin-top:12px">
+      <label for="cfgSpace">مساحة تركيب الملابس (Hugging Face Space)</label>
+      <input type="text" id="cfgSpace" dir="ltr">
+    </div>
+    <div class="field">
+      <label for="cfgToken">مفتاح Hugging Face (اختياري)</label>
+      <input type="password" id="cfgToken" dir="ltr" placeholder="hf_...">
+      <p class="hint" style="margin:0">يزيد حصتك المجانية. يُحفظ على جهازك فقط.</p>
+    </div>
+    <div class="field">
+      <label for="cfgGen">رابط خدمة توليد الصور</label>
+      <input type="url" id="cfgGen" dir="ltr">
+    </div>
+    <button class="btn primary block" id="btnCloseSettings">تم</button>
+  </div>
+</dialog>
+
+<div id="toast" role="alert"></div>
+
+<script type="module">
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const MAX_SIDE = 1280;
+
+const DEFAULTS = {
+  space: 'yisol/IDM-VTON',
+  token: '',
+  gen: 'https://image.pollinations.ai/prompt/{prompt}?width={w}&height={h}&nologo=true&seed={seed}'
+};
+let cfg = { ...DEFAULTS };
+try { cfg = { ...DEFAULTS, ...JSON.parse(localStorage.getItem('ss-cfg') || '{}') }; } catch (e) {}
+
+const BG_LIB = [
+  'https://esm.sh/@imgly/background-removal@1.5.5',
+  'https://esm.sh/@imgly/background-removal'
+];
+const GRADIO_LIB = [
+  'https://esm.sh/@gradio/client',
+  'https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.min.js'
+];
+const libs = {};
+async function loadLib(key, urls) {
+  if (libs[key]) return libs[key];
+  for (const u of urls) {
+    try { libs[key] = await import(u); return libs[key]; } catch (e) { console.warn('lib failed', u, e); }
+  }
+  throw new Error('تعذر تحميل المكتبة. تحقق من الاتصال بالإنترنت وحاول مجدداً.');
+}
+
+const loadImg = src => new Promise((res, rej) => {
+  const i = new Image(); i.crossOrigin = 'anonymous';
+  i.onload = () => res(i); i.onerror = () => rej(new Error('تعذر قراءة الصورة.')); i.src = src;
+});
+function toCanvas(img, max = MAX_SIDE) {
+  const w = img.naturalWidth || img.width, h = img.naturalHeight || img.height;
+  const k = Math.min(1, max / Math.max(w, h));
+  const c = document.createElement('canvas');
+  c.width = Math.max(1, Math.round(w * k)); c.height = Math.max(1, Math.round(h * k));
+  c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+  return c;
+}
+async function blobToCanvas(blob, max = MAX_SIDE) {
+  const url = URL.createObjectURL(blob);
+  try { return toCanvas(await loadImg(url), max); } finally { URL.revokeObjectURL(url); }
+}
+const fileToCanvas = (f, max) => blobToCanvas(f, max);
+const canvasBlob = (c, type = 'image/png', q = .92) => new Promise(r => c.toBlob(r, type, q));
+
+function trim(c) {
+  const x = c.getContext('2d', { willReadFrequently: true });
+  const { data, width: W, height: H } = x.getImageData(0, 0, c.width, c.height);
+  let x0 = W, y0 = H, x1 = -1, y1 = -1;
+  for (let y = 0; y < H; y++) for (let xx = 0; xx < W; xx++) {
+    if (data[(y * W + xx) * 4 + 3] > 12) { if (xx < x0) x0 = xx; if (xx > x1) x1 = xx; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  }
+  if (x1 < 0) return c;
+  const o = document.createElement('canvas'); o.width = x1 - x0 + 1; o.height = y1 - y0 + 1;
+  o.getContext('2d').drawImage(c, x0, y0, o.width, o.height, 0, 0, o.width, o.height);
+  return o;
+}
+
+/* ---------- state ---------- */
+const S = { base: null, cut: null, bg: null, objs: [], sel: -1, history: [], busy: false };
+let garm = null;
+
+const cv = $('#cv'), ctx = cv.getContext('2d');
+
+function snapshot() { return { base: S.base, cut: S.cut, bg: S.bg, objs: S.objs.map(o => ({ ...o })) }; }
+function push() { S.history.push(snapshot()); if (S.history.length > 15) S.history.shift(); updateUI(); }
+function undo() {
+  const h = S.history.pop(); if (!h) return;
+  Object.assign(S, h, { sel: -1 });
+  render(); syncSel(); updateUI();
+}
+
+/* ---------- status / run ---------- */
+const tape = $('#tape');
+function setStatus(t) { $('#statusText').textContent = t; }
+function setProgress(p) { tape.classList.remove('ind'); tape.style.setProperty('--p', p + '%'); }
+let toastT;
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 4200);
+}
+async function run(label, fn) {
+  if (S.busy) return;
+  S.busy = true; document.body.classList.add('busy');
+  tape.classList.add('busy', 'ind'); tape.style.setProperty('--p', '0%'); setStatus(label);
+  try { await fn(); }
+  catch (e) { console.error(e); toast(e.message || 'حدث خطأ غير متوقع.'); }
+  finally {
+    S.busy = false; document.body.classList.remove('busy');
+    tape.classList.remove('busy', 'ind'); tape.style.setProperty('--p', '0%');
+    setStatus(S.base ? 'جاهز' : 'اختر صورة لتبدأ');
+    updateUI();
+  }
+}
+function needBase() { if (!S.base) { toast('اختر صورة الشخص أولاً.'); return false; } return true; }
+
+/* ---------- rendering ---------- */
+function paintBg(c, W, H) {
+  const b = S.bg;
+  if (b.kind === 'grad') {
+    const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, b.a); g.addColorStop(1, b.b);
+    c.fillStyle = g; c.fillRect(0, 0, W, H);
+  } else if (b.kind === 'color') {
+    c.fillStyle = b.a; c.fillRect(0, 0, W, H);
+  } else {
+    const k = Math.max(W / b.img.width, H / b.img.height);
+    const w = b.img.width * k, h = b.img.height * k;
+    c.drawImage(b.img, (W - w) / 2, (H - h) / 2, w, h);
+  }
+}
+function objSize(o, W) { const w = o.w * W; return { w, h: w * o.img.height / o.img.width }; }
+function drawObj(c, o, W, H) {
+  const { w, h } = objSize(o, W);
+  c.save(); c.translate(o.x * W, o.y * H);
+  c.save(); c.translate(0, h * .46); c.scale(1, .14);
+  const g = c.createRadialGradient(0, 0, 0, 0, 0, w * .52);
+  g.addColorStop(0, 'rgba(0,0,0,.5)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+  c.fillStyle = g; c.fillRect(-w * .6, -w * .6, w * 1.2, w * 1.2); c.restore();
+  if (o.flip) c.scale(-1, 1);
+  c.drawImage(o.img, -w / 2, -h / 2, w, h);
+  c.restore();
+}
+function draw(c, showSel) {
+  const W = S.base.width, H = S.base.height;
+  c.clearRect(0, 0, W, H);
+  if (S.bg && S.cut) {
+    paintBg(c, W, H);
+    S.objs.filter(o => o.behind).forEach(o => drawObj(c, o, W, H));
+    c.drawImage(S.cut, 0, 0, W, H);
+    S.objs.filter(o => !o.behind).forEach(o => drawObj(c, o, W, H));
+  } else {
+    c.drawImage(S.base, 0, 0, W, H);
+    S.objs.forEach(o => drawObj(c, o, W, H));
+  }
+  const o = S.objs[S.sel];
+  if (showSel && o) {
+    const { w, h } = objSize(o, W);
+    const x = o.x * W - w / 2, y = o.y * H - h / 2, lw = Math.max(2, W * .004);
+    c.lineWidth = lw * 2.4; c.strokeStyle = '#1C2536'; c.setLineDash([]); c.strokeRect(x, y, w, h);
+    c.lineWidth = lw; c.strokeStyle = '#F4C430'; c.setLineDash([W * .014, W * .009]); c.strokeRect(x, y, w, h);
+    c.setLineDash([]);
+  }
+}
+function render() {
+  if (!S.base) { cv.style.display = 'none'; $('#empty').style.display = ''; return; }
+  if (cv.width !== S.base.width || cv.height !== S.base.height) { cv.width = S.base.width; cv.height = S.base.height; }
+  cv.style.display = 'block'; $('#empty').style.display = 'none';
+  draw(ctx, true);
+}
+function flatten() {
+  const c = document.createElement('canvas'); c.width = S.base.width; c.height = S.base.height;
+  draw(c.getContext('2d'), false); return c;
+}
+function updateUI() {
+  $('#btnUndo').disabled = !S.history.length;
+  $('#btnSave').disabled = !S.base;
+}
+function syncSel() {
+  const o = S.objs[S.sel];
+  $('#selGroup').hidden = !o;
+  if (o) {
+    $('#objSize').value = Math.round(o.w * 100); $('#objSizeV').textContent = Math.round(o.w * 100);
+    $('#objBehind').checked = !!o.behind;
+  }
+}
+
+/* ---------- loading photos ---------- */
+function setBase(c) {
+  push(); S.base = c; S.cut = null; S.bg = null; S.objs = []; S.sel = -1;
+  render(); syncSel(); setStatus('جاهز'); updateUI();
+}
+$('#file').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  try { setBase(await fileToCanvas(f)); } catch (err) { toast(err.message); }
+});
+$('#btnNew').onclick = () => $('#file').click();
+$('#empty').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('#file').click(); } });
+
+/* ---------- background removal ---------- */
+async function removeBg(canvas) {
+  const mod = await loadLib('bg', BG_LIB);
+  const blob = await canvasBlob(canvas, 'image/png');
+  const out = await mod.removeBackground(blob, {
+    progress: (key, cur, tot) => {
+      setStatus(String(key).startsWith('fetch') ? 'تحميل النموذج (أول مرة فقط)' : 'فصل العنصر عن خلفيته');
+      if (tot) setProgress(Math.round(cur / tot * 100));
+    }
+  });
+  return blobToCanvas(out, Math.max(canvas.width, canvas.height));
+}
+async function ensureCut() { if (!S.cut) S.cut = await removeBg(S.base); }
+
+/* ---------- AI image generation ---------- */
+async function generate(prompt, w, h) {
+  const url = cfg.gen.replace('{prompt}', encodeURIComponent(prompt)).replace('{w}', w).replace('{h}', h)
+    .replace('{seed}', Math.floor(Math.random() * 1e6));
+  setStatus('توليد الصورة');
+  const r = await fetch(url);
+  if (!r.ok) throw new Error('فشل توليد الصورة. حاول لاحقاً أو غيّر رابط الخدمة من الإعدادات.');
+  return blobToCanvas(await r.blob());
+}
+
+/* ---------- tabs ---------- */
+$$('nav button').forEach(b => b.onclick = () => {
+  $$('nav button').forEach(x => x.setAttribute('aria-selected', x === b));
+  $$('.panel').forEach(p => p.hidden = p.id !== 'p-' + b.dataset.tab);
+});
+
+/* ---------- clothes ---------- */
+$('#btnGarment').onclick = () => $('#garmFile').click();
+$('#garmFile').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  try {
+    garm = await fileToCanvas(f, 1024);
+    const p = $('#garmPrev'); p.src = garm.toDataURL('image/jpeg', .7); p.style.display = 'block';
+    $('#btnGarment').textContent = 'غيّر صورة القطعة';
+  } catch (err) { toast(err.message); }
+});
+$('#btnTryOn').onclick = () => {
+  if (!needBase()) return;
+  if (!garm) return toast('اختر صورة القطعة أولاً.');
+  run('الاتصال بخدمة التركيب', async () => {
+    const { Client, handle_file } = await loadLib('gradio', GRADIO_LIB);
+    const client = await Client.connect(cfg.space, cfg.token ? { hf_token: cfg.token, token: cfg.token } : {});
+    const person = new File([await canvasBlob(S.base, 'image/jpeg', .92)], 'person.jpg', { type: 'image/jpeg' });
+    const garment = new File([await canvasBlob(garm, 'image/jpeg', .92)], 'garment.jpg', { type: 'image/jpeg' });
+    const job = client.submit('/tryon', {
+      dict: { background: handle_file(person), layers: [], composite: null },
+      garm_img: handle_file(garment),
+      garment_des: $('#garmDesc').value.trim() || 'a piece of clothing',
+      is_checked: true, is_checked_crop: false, denoise_steps: 30, seed: 42
+    });
+    let result = null;
+    for await (const m of job) {
+      if (m.type === 'status') {
+        if (m.stage === 'error') {
+          const msg = String(m.message || '');
+          throw new Error(/quota|GPU/i.test(msg)
+            ? 'انتهت الحصة المجانية. أضف مفتاح Hugging Face من الإعدادات أو حاول لاحقاً.'
+            : 'فشل التركيب: ' + (msg || 'خطأ في الخدمة'));
+        }
+        if (m.position != null) setStatus('في الطابور: ' + (m.position + 1));
+        else if (m.stage === 'generating') setStatus('جاري تركيب القطعة');
+      } else if (m.type === 'data') result = m.data;
+    }
+    if (!result || !result[0]) throw new Error('لم تُرجع الخدمة نتيجة. حاول مرة أخرى.');
+    const url = result[0].url || result[0].path || result[0];
+    const blob = await (await fetch(url)).blob();
+    const out = await blobToCanvas(blob);
+    push(); S.base = out; S.cut = null; render();
+    if (S.bg) { setStatus('إعادة فصل الشخص'); await ensureCut(); render(); }
+    toast('تم تركيب القطعة.');
+  });
+};
+
+/* ---------- background ---------- */
+const GRADS = [
+  ['أبيض استوديو', '#F7F8FA', '#E3E7EE'], ['ليلي', '#0f2027', '#2c5364'], ['سماء', '#6dd5fa', '#e8f6ff'],
+  ['غروب', '#ff9a8b', '#ffd3a5'], ['رمل', '#f6d365', '#fda085'], ['عشب', '#76b852', '#cfe8a9'],
+  ['بنفسجي', '#667eea', '#764ba2'], ['أسود', '#16181d', '#16181d']
+];
+const sw = $('#swatches');
+const none = document.createElement('button');
+none.className = 'sw none'; none.textContent = 'الأصلية'; none.setAttribute('aria-pressed', 'false');
+none.onclick = () => { if (!needBase()) return; push(); S.bg = null; render(); markSw(none); };
+sw.append(none);
+GRADS.forEach(([n, a, b]) => {
+  const x = document.createElement('button'); x.className = 'sw'; x.setAttribute('aria-label', n); x.setAttribute('aria-pressed', 'false');
+  x.style.background = `linear-gradient(${a},${b})`;
+  x.onclick = () => applyBg({ kind: 'grad', a, b }, x);
+  sw.append(x);
+});
+function markSw(el) { $$('.sw').forEach(s => s.setAttribute('aria-pressed', s === el)); }
+function applyBg(bg, el) {
+  if (!needBase()) return;
+  run('تجهيز الخلفية', async () => {
+    await ensureCut(); push(); S.bg = bg; render(); markSw(el || null);
+  });
+}
+const BG_PRESETS = [['شاطئ', 'tropical beach at sunset'], ['مدينة ليلاً', 'city street at night with neon lights'],
+  ['استوديو', 'minimal photography studio backdrop'], ['غابة', 'sunlit forest path'], ['صحراء', 'desert dunes at golden hour']];
+BG_PRESETS.forEach(([n, p]) => {
+  const b = document.createElement('button'); b.className = 'chip'; b.textContent = n;
+  b.onclick = () => { $('#bgPrompt').value = p; genBg(); };
+  $('#bgChips').append(b);
+});
+function genBg() {
+  if (!needBase()) return;
+  const p = $('#bgPrompt').value.trim(); if (!p) return toast('اكتب وصف الخلفية أولاً.');
+  run('توليد الخلفية', async () => {
+    const W = 1024, H = clamp(Math.round(1024 * S.base.height / S.base.width), 576, 1536);
+    const img = await generate(p + ', background scene only, no people, photorealistic', W, H);
+    await ensureCut(); push(); S.bg = { kind: 'img', img }; render(); markSw(null);
+  });
+}
+$('#btnGenBg').onclick = genBg;
+$('#btnBgFile').onclick = () => $('#bgFile').click();
+$('#bgFile').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  try { applyBg({ kind: 'img', img: await fileToCanvas(f) }, null); } catch (err) { toast(err.message); }
+});
+
+/* ---------- objects ---------- */
+const OBJS = [['سيارة رياضية', 'red sports car, side view'], ['موتوسكل', 'sport motorcycle, side view'],
+  ['سيارة دفع رباعي', 'black SUV, three quarter view'], ['دراجة', 'city bicycle, side view'],
+  ['حصان', 'brown horse standing, side view'], ['كلب', 'golden retriever dog sitting']];
+OBJS.forEach(([n, p]) => {
+  const b = document.createElement('button'); b.className = 'chip'; b.textContent = n;
+  b.onclick = () => { $('#objPrompt').value = p; genObj(); };
+  $('#objChips').append(b);
+});
+async function placeObject(c, doCut) {
+  if (doCut) c = await removeBg(c);
+  c = trim(c);
+  push();
+  S.objs.push({ img: c, x: .5, y: .7, w: .45, flip: false, behind: false });
+  S.sel = S.objs.length - 1; render(); syncSel();
+}
+function genObj() {
+  if (!needBase()) return;
+  const p = $('#objPrompt').value.trim(); if (!p) return toast('اكتب وصف العنصر أولاً.');
+  run('توليد العنصر', async () => {
+    const img = await generate(p + ', single object, centered, isolated on plain white background, studio lighting, photorealistic', 1024, 768);
+    await placeObject(img, $('#objCut').checked);
+  });
+}
+$('#btnGenObj').onclick = genObj;
+$('#btnObjFile').onclick = () => $('#objFile').click();
+$('#objFile').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f || !needBase()) return;
+  run('تجهيز العنصر', async () => placeObject(await fileToCanvas(f), $('#objCut').checked));
+});
+$('#objSize').oninput = e => {
+  const o = S.objs[S.sel]; if (!o) return;
+  o.w = e.target.value / 100; $('#objSizeV').textContent = e.target.value; render();
+};
+$('#objBehind').onchange = e => { const o = S.objs[S.sel]; if (!o) return; o.behind = e.target.checked; render();
+  if (o.behind && !(S.bg && S.cut)) toast('الخيار يعمل بعد اختيار خلفية.'); };
+$('#btnFlip').onclick = () => { const o = S.objs[S.sel]; if (o) { o.flip = !o.flip; render(); } };
+$('#btnDel').onclick = () => { if (S.sel < 0) return; push(); S.objs.splice(S.sel, 1); S.sel = -1; render(); syncSel(); };
+
+/* drag objects on the canvas */
+let drag = null;
+const local = e => { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height }; };
+function hit(p) {
+  const W = S.base.width, H = S.base.height;
+  for (let i = S.objs.length - 1; i >= 0; i--) {
+    const o = S.objs[i], { w, h } = objSize(o, W);
+    if (Math.abs(p.x - o.x) <= w / W / 2 && Math.abs(p.y - o.y) <= h / H / 2) return i;
+  }
+  return -1;
+}
+cv.addEventListener('pointerdown', e => {
+  if (!S.base) return;
+  const p = local(e), i = hit(p);
+  S.sel = i; syncSel(); render();
+  if (i >= 0) { drag = { dx: S.objs[i].x - p.x, dy: S.objs[i].y - p.y }; cv.setPointerCapture(e.pointerId); }
+});
+cv.addEventListener('pointermove', e => {
+  if (!drag) return;
+  const p = local(e), o = S.objs[S.sel]; if (!o) return;
+  o.x = clamp(p.x + drag.dx, 0, 1); o.y = clamp(p.y + drag.dy, 0, 1); render();
+});
+['pointerup', 'pointercancel'].forEach(t => cv.addEventListener(t, () => { drag = null; }));
+
+/* ---------- enhance ---------- */
+function blur3(d, W, H) {
+  const t = new Uint8ClampedArray(d.length), o = new Uint8ClampedArray(d.length);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const i = (y * W + x) * 4, l = x > 0 ? i - 4 : i, r = x < W - 1 ? i + 4 : i;
+    for (let k = 0; k < 3; k++) t[i + k] = (d[l + k] + d[i + k] + d[r + k]) / 3;
+  }
+  for (let y = 0; y < H; y++) {
+    const u = y > 0 ? -W * 4 : 0, n = y < H - 1 ? W * 4 : 0;
+    for (let x = 0; x < W; x++) {
+      const i = (y * W + x) * 4;
+      for (let k = 0; k < 3; k++) o[i + k] = (t[i + u + k] + t[i + k] + t[i + n + k]) / 3;
+    }
+  }
+  return o;
+}
+function enhance(src, { scale, sharp, sat, auto }) {
+  let W = Math.round(src.width * scale), H = Math.round(src.height * scale);
+  const m = Math.max(W, H); if (m > 3000) { const k = 3000 / m; W = Math.round(W * k); H = Math.round(H * k); }
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const x = c.getContext('2d', { willReadFrequently: true });
+  x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high'; x.drawImage(src, 0, 0, W, H);
+  const id = x.getImageData(0, 0, W, H), d = id.data;
+  if (auto) {
+    const hist = new Uint32Array(256);
+    for (let i = 0; i < d.length; i += 4) hist[(d[i] * .299 + d[i + 1] * .587 + d[i + 2] * .114) | 0]++;
+    const tot = W * H; let acc = 0, lo = 0, hi = 255;
+    for (let v = 0; v < 256; v++) { acc += hist[v]; if (acc > tot * .005) { lo = v; break; } }
+    acc = 0; for (let v = 255; v >= 0; v--) { acc += hist[v]; if (acc > tot * .005) { hi = v; break; } }
+    if (hi - lo > 30) { const k = 255 / (hi - lo); for (let i = 0; i < d.length; i += 4) for (let j = 0; j < 3; j++) d[i + j] = (d[i + j] - lo) * k; }
+  }
+  if (sat) {
+    const s = 1 + sat;
+    for (let i = 0; i < d.length; i += 4) {
+      const l = d[i] * .299 + d[i + 1] * .587 + d[i + 2] * .114;
+      d[i] = l + (d[i] - l) * s; d[i + 1] = l + (d[i + 1] - l) * s; d[i + 2] = l + (d[i + 2] - l) * s;
+    }
+  }
+  if (sharp) {
+    const b = blur3(d, W, H);
+    for (let i = 0; i < d.length; i += 4) for (let j = 0; j < 3; j++) d[i + j] = d[i + j] + sharp * (d[i + j] - b[i + j]);
+  }
+  x.putImageData(id, 0, 0); return c;
+}
+[['enSharp', 'enSharpV'], ['enSat', 'enSatV']].forEach(([a, b]) => $('#' + a).oninput = e => $('#' + b).textContent = e.target.value);
+$('#btnEnhance').onclick = () => {
+  if (!needBase()) return;
+  run('تحسين الصورة', async () => {
+    const flat = flatten(); await sleep(60);
+    const out = enhance(flat, {
+      scale: +document.querySelector('input[name=scale]:checked').value,
+      sharp: $('#enSharp').value / 10, sat: $('#enSat').value / 100, auto: $('#enAuto').checked
+    });
+    push(); S.base = out; S.cut = null; S.bg = null; S.objs = []; S.sel = -1; render(); syncSel();
+    toast('تم تحسين الصورة.');
+  });
+};
+
+/* ---------- save ---------- */
+$('#btnSave').onclick = async () => {
+  if (!S.base) return;
+  const blob = await canvasBlob(flatten(), 'image/png');
+  const file = new File([blob], 'style-studio.png', { type: 'image/png' });
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try { await navigator.share({ files: [file], title: 'ستايل ستوديو' }); return; } catch (e) { if (e.name === 'AbortError') return; }
+  }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'style-studio.png';
+  document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+};
+$('#btnUndo').onclick = undo;
+
+/* ---------- settings ---------- */
+[['cfgSpace', 'space'], ['cfgToken', 'token'], ['cfgGen', 'gen']].forEach(([id, k]) => {
+  const el = $('#' + id); el.value = cfg[k];
+  el.addEventListener('change', () => {
+    cfg[k] = el.value.trim() || DEFAULTS[k];
+    try { localStorage.setItem('ss-cfg', JSON.stringify(cfg)); } catch (e) {}
+  });
+});
+
+/* settings dialog */
+const dlg = $('#settings');
+$('#btnSettings').onclick = () => dlg.showModal();
+$('#btnCloseSettings').onclick = () => dlg.close();
+dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+render(); updateUI();
+</script>
+</body>
+</html>
